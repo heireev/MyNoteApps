@@ -20,12 +20,10 @@ class NoteAddUpdateActivity : AppCompatActivity() {
         const val ALERT_DIALOG_CLOSE = 10
         const val ALERT_DIALOG_DELETE = 20
     }
-
     private var isEdit = false
     private var note: Note? = null
 
     private lateinit var noteAddUpdateViewModel: NoteAddUpdateViewModel
-
     private var _activityNoteAddUpdateBinding: ActivityNoteAddUpdateBinding? = null
     private val binding get() = _activityNoteAddUpdateBinding
 
@@ -43,10 +41,8 @@ class NoteAddUpdateActivity : AppCompatActivity() {
         } else {
             note = Note()
         }
-
         val actionBarTitle: String
         val btnTitle: String
-
         if (isEdit) {
             actionBarTitle = getString(R.string.change)
             btnTitle = getString(R.string.update)
@@ -60,10 +56,8 @@ class NoteAddUpdateActivity : AppCompatActivity() {
             actionBarTitle = getString(R.string.add)
             btnTitle = getString(R.string.save)
         }
-
         supportActionBar?.title = actionBarTitle
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         binding?.btnSubmit?.text = btnTitle
 
         binding?.btnSubmit?.setOnClickListener {
@@ -97,22 +91,12 @@ class NoteAddUpdateActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun obtainViewModel(activity: AppCompatActivity): NoteAddUpdateViewModel {
-        val factory = ViewModelFactory.getInstance(activity.application)
-        return ViewModelProvider(activity, factory).get(NoteAddUpdateViewModel::class.java)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (isEdit) {
             menuInflater.inflate(R.menu.menu_form, menu)
         }
         return super.onCreateOptionsMenu(menu)
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_delete -> showAlertDialog(ALERT_DIALOG_DELETE)
@@ -120,7 +104,6 @@ class NoteAddUpdateActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
     override fun onBackPressed() {
         showAlertDialog(ALERT_DIALOG_CLOSE)
     }
@@ -143,15 +126,27 @@ class NoteAddUpdateActivity : AppCompatActivity() {
             setCancelable(false)
             setPositiveButton(getString(R.string.yes)) { _, _ ->
                 if (!isDialogClose) {
-                   noteAddUpdateViewModel.delete(note as Note)
-                   showToast(getString(R.string.delete))
+                    noteAddUpdateViewModel.delete(note as Note)
+                    showToast(getString(R.string.deleted))
                 }
-
                 finish()
             }
             setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.cancel() }
         }
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _activityNoteAddUpdateBinding = null
+    }
+    private fun obtainViewModel(activity: AppCompatActivity): NoteAddUpdateViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory).get(NoteAddUpdateViewModel::class.java)
     }
 }

@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private var _activityMainBinding: ActivityMainBinding? = null
     private val binding get() = _activityMainBinding
     private lateinit var adapter: NoteAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         val mainViewModel = obtainViewModel(this@MainActivity)
-        mainViewModel.getAllNotes().observe(this, {noteList ->
+        mainViewModel.getAllNotes().observe(this, { noteList ->
             if (noteList != null) {
                 adapter.setListNotes(noteList)
             }
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun obtainViewModel(activity: AppCompatActivity): MainViewModel {
         val factory = ViewModelFactory.getInstance(activity.application)
-        return ViewModelProvider(activity,factory).get(MainViewModel::class.java)
+        return ViewModelProvider(activity, factory).get(MainViewModel::class.java)
     }
 
     override fun onDestroy() {
